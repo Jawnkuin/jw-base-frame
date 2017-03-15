@@ -1,35 +1,29 @@
-// import fetch from 'isomorphic-fetch';
-
-// export const SELECT_USER = 'SELECT_USER';
-export const REQUEST_USERS = 'REQUEST_USERS';
-export const RECEIVE_USERS = 'RECEIVE_USERS';
-export const FETCH_USERS = 'FETCH_USERS';
-export const CLICK_USER = 'CLICK_USER';
+import actionTypes from '../actions';
 
 export const receiveUsers = users => (
   {
-    type: RECEIVE_USERS,
+    type: actionTypes.RECEIVE_FETCH_USERS,
     users
   }
 );
 
-export const requestUsers = uid => (
+export const requestUsers = rid => (
   {
-    type: REQUEST_USERS,
-    uid
+    type: actionTypes.REQUEST_FETCH_USERS,
+    rid
   }
 );
 
-export const clickUser = user => (
+export const clickUserItem = user => (
   {
-    type: CLICK_USER,
-    roles: user.roles
+    type: actionTypes.CLICK_USER_ITEM,
+    user
   }
 );
 
 export const fetchUsers = (rid) => {
   const queryQl = rid ?
-   `query={users(role:${rid}){id,name,roles{id,name}}}` : 'query={users{id,name,roles{id,name}}}';
+   `query={users(role:${rid}){_id,loginname,roles{id,name}}}` : 'query={users{_id,loginname,roles{_id,name}}}';
   return (dispatch) => {
     dispatch(requestUsers(rid));
     return fetch(`/graphql?${queryQl}`)

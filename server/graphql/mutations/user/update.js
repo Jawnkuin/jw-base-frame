@@ -64,7 +64,7 @@ export const updateUserTel = {
       type: new GraphQLNonNull(GraphQLString)
     }
   },
-  async resolve (root, params, options) {
+  async resolve (root, params, context, options) {
     const projection = getProjection(options.fieldNodes[0]);
 
     return updateUser({
@@ -89,7 +89,7 @@ export const updateUserRoles = {
       type: new GraphQLList(GraphQLID)
     }
   },
-  async resolve (root, params, options) {
+  async resolve (root, params, context, options) {
     const projection = getProjection(options.fieldNodes[0]);
 
     return updateUser({
@@ -114,7 +114,7 @@ export const updateUserEmail = {
       type: new GraphQLNonNull(GraphQLString)
     }
   },
-  async resolve (root, params, options) {
+  async resolve (root, params, context, options) {
     const projection = getProjection(options.fieldNodes[0]);
 
     return updateUser({
@@ -139,7 +139,7 @@ export const updateUserStatus = {
       type: new GraphQLNonNull(GraphQLInt)
     }
   },
-  async resolve (root, params, options) {
+  async resolve (root, params, context, options) {
     const projection = getProjection(options.fieldNodes[0]);
 
     return updateUser({

@@ -1,11 +1,14 @@
 import mongoose from 'mongoose';
-import {OperationSchema} from './operation';
 
 
 const PermissionSchema = new mongoose.Schema({
-  operation: OperationSchema,
+  operation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Operation'
+  },
   resource: {
-    type: mongoose.Schema.Types.ObjectId
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Resource'
   }
 });
 

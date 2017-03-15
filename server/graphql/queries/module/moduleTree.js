@@ -18,7 +18,8 @@ export default {
     limit: {
       name: 'limit',
       type: GraphQLBoolean,
-      default: false
+      default: false,
+      description: '`true` for direct descandents `false` for whole subtree'
     }
   },
   async resolve (root, params) {

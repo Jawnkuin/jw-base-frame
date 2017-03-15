@@ -1,7 +1,7 @@
 import {GraphQLID} from 'graphql';
 import userType from '../../types/user';
 import UserModel from '../../../models/user';
-import getProjection from '../../../../helpers/get-projection';
+// import getProjection from '../../../../helpers/get-projection';
 
 export default {
   type: userType,
@@ -11,8 +11,8 @@ export default {
       type: GraphQLID
     }
   },
-  resolve (root, params, context, info) {
-    const projection = getProjection(info.fieldNodes[0]);
+  resolve (root, params) {
+    // const projection = getProjection(info.fieldNodes[0]);
 
     let id = params.id;
     if (!id) {
@@ -20,7 +20,7 @@ export default {
     }
     return UserModel
       .findById(id)
-      .select(projection)
+      // .select(projection)
       .exec();
   }
 };

@@ -1,15 +1,16 @@
 import React, {PropTypes} from 'react';
-import {List, ListItem} from 'material-ui/List';
+import {List} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import UserCardItem from './UserCardItem';
 
-const UserList = ({users, onUserClick}) => (
-  <List>
+const UserList = ({users, onUserRolesOpenClick}) => (
+  <List style={{width: '100%'}}>
     <Subheader>Users</Subheader>
     {users.map(user =>
-      <ListItem
-        key={user.id}
-        primaryText={user.name}
-        onClick={e => onUserClick(e, user)}
+      <UserCardItem
+        key={user._id}
+        user={user}
+        onUserRolesOpenClick={onUserRolesOpenClick}
       />
     )}
   </List>
@@ -18,10 +19,13 @@ const UserList = ({users, onUserClick}) => (
 
 UserList.propTypes = {
   users: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired
+    _id: PropTypes.string.isRequired,
+    loginname: PropTypes.string.isRequired,
+    roles: PropTypes.arrayOf(
+      PropTypes.object.isRequired
+    ).isRequired
   }).isRequired).isRequired,
-  onUserClick: PropTypes.func.isRequired
+  onUserRolesOpenClick: PropTypes.func.isRequired
 };
 
 export default UserList;

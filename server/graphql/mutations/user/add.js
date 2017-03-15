@@ -6,6 +6,7 @@ import userInputType from '../../types/user-input';
 import userType from '../../types/user';
 import UserModel from '../../../models/user';
 
+/*
 async function registerUser (user, password) {
   return new Promise((resolve, reject) => {
     UserModel.register(user, password, (err) => {
@@ -16,6 +17,7 @@ async function registerUser (user, password) {
     });
   });
 }
+*/
 
 export default {
   type: userType,
@@ -26,11 +28,12 @@ export default {
     }
   },
   async resolve (root, params) {
-    const {username, name, email, password} = params.data;
+    const {loginname, useralias, email, password} = params.data;
     const user = await new UserModel({
-      username,
-      name,
-      email
+      loginname,
+      useralias,
+      email,
+      password
     }).save();
     /*
     const count = await UserModel.count();
@@ -40,7 +43,7 @@ export default {
       authorize(root);
     }
     */
-    await registerUser(user, password);
+    // await registerUser(user, password);
 
     return user;
   }

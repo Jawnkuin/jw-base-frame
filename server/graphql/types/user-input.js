@@ -8,9 +8,9 @@ const userInputType = new GraphQLInputObjectType({
   name: 'UserInput',
   fields: {
     loginname: {type: new GraphQLNonNull(GraphQLString)},
-    useralias: {type: GraphQLString},
+    useralias: {type: new GraphQLNonNull(GraphQLString)},
     password: {type: GraphQLString},
-    email: {type: GraphQLString},
+    email: {type: new GraphQLNonNull(GraphQLString)},
     date: {type: GraphQLString}
   }
 });

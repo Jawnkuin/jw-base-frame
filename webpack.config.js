@@ -3,7 +3,7 @@ import path from 'path';
 
 export default {
   devtool: 'cheap-module-eval-source-map',
-  entry: './public',
+  entry: './client',
   output: {
     path: path.join(__dirname, 'public'),
     filename: 'main.js',
@@ -19,7 +19,7 @@ export default {
         test: /\.js$/,
         loaders: ['babel-loader'],
         exclude: /node_modules/,
-        include: path.join(__dirname, 'public')
+        include: path.join(__dirname, 'client')
       }
     ]
   }

@@ -1,17 +1,21 @@
 import {
-  GraphQLObjectType
+  GraphQLObjectType,
+  GraphQLID
 } from 'graphql';
+import OperationModel from '../../models/operation';
 import operationType from './operation';
-import resourceType from './resource';
 
 const permissionType = new GraphQLObjectType({
   name: 'Permission',
   fields: {
     operation: {
-      type: operationType
+      type: operationType,
+      resolve (parent) {
+        return OperationModel.findOneByID(parent.operation);
+      }
     },
-    resource: {
-      type: resourceType
+    resourceid: {
+      type: GraphQLID
     }
   }
 });
