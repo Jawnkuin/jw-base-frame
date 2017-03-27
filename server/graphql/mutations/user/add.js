@@ -22,13 +22,13 @@ async function registerUser (user, password) {
 export default {
   type: userType,
   args: {
-    data: {
-      name: 'data',
+    input: {
+      name: 'input',
       type: new GraphQLNonNull(userInputType)
     }
   },
   async resolve (root, params) {
-    const {loginname, useralias, email, password} = params.data;
+    const {loginname, useralias, email, password} = params.input;
     const user = await new UserModel({
       loginname,
       useralias,

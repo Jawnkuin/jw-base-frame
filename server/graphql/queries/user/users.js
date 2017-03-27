@@ -1,10 +1,9 @@
-import {GraphQLList} from 'graphql';
-import userType from '../../types/user';
+import userListType from '../../types/user-list';
 import UserModel from '../../../models/user';
 import {paginationQueryArgs, paginateQuery, searchQuery} from '../../query-pagination';
 
 export default {
-  type: new GraphQLList(userType),
+  type: userListType,
   args: {
     ...paginationQueryArgs
   },
@@ -14,6 +13,8 @@ export default {
     // parse query pagination args
     paginateQuery(query, params);
 
-    return query.exec();
+    const users = await query.exec();
+
+    return {users};
   }
 };

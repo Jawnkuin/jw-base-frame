@@ -1,0 +1,166 @@
+enum FieldType {
+  Float
+  Int
+  String
+  Boolean
+}
+
+input FieldValue {
+  field: String
+  value: String
+  ftype: FieldType
+}
+
+input Filter {
+  property: String!
+  op: FilterOp
+}
+
+input FilterOp {
+  eq: String
+  gt: String
+  lt: String
+  gte: String
+  lte: String
+  nin: [String]
+  in: [String]
+}
+
+input keyfieldvaluepairsUpdate {
+  id: String!
+  fieldvalues: [FieldValue]
+}
+
+input keylistUpdate {
+  id: String!
+  value: [String]
+}
+
+input keypermissionlistUpdate {
+  id: String!
+  value: [PermissionInput]
+}
+
+input keystringUpdate {
+  id: String!
+  value: String!
+}
+
+# Bussiness Module
+type Module implements Resource {
+  owner: String
+  restype: String
+  name: String
+  path: String
+  description: String
+}
+
+input ModuleInput {
+  owner: ID
+  restype: String!
+  name: String!
+  parentid: ID
+  isroot: Boolean
+  description: String
+}
+
+type Mutation {
+  addUser(input: UserInput!): User
+  removeUser(input: ID!): User
+  updateUserAlias(input: keystringUpdate!): User
+  updateUserEmail(input: keystringUpdate!): User
+  updateUserPassword(input: keystringUpdate!): Boolean
+  updateUserRoles(input: keylistUpdate!): User
+  updateUserStatus(input: keystringUpdate!): User
+  updateUserTel(input: keystringUpdate!): User
+  updateUserMultiFields(input: keyfieldvaluepairsUpdate!): User
+  addRole(data: RoleInput!): Role
+  removeRole(id: ID!): Role
+  updateRoleDescription(input: keystringUpdate!): Role
+  updateRolePermissions(input: [keypermissionlistUpdate]): Role
+  addModule(data: ModuleInput!): Module
+  removeModule(id: ID!): [Module]
+}
+
+type Operation {
+  _id: String!
+  name: String
+  description: String
+}
+
+type Permission {
+  operation: Operation
+  resourceid: ID
+}
+
+input PermissionInput {
+  operation: ID!
+  resource: ID!
+}
+
+type Query {
+  user(id: ID): User
+  users(sort: String, order: String, limit: Int, filters: [Filter], page: Int, search: String, s: String): UserList
+  role(id: ID): Role
+  roles(sort: String, order: String, limit: Int, filters: [Filter], page: Int, search: String, s: String): RoleList
+  module(id: ID): Module
+  moduleTree(
+    id: ID
+
+    # `true` for direct descandents `false` for whole subtree
+    limit: Boolean
+  ): [Module]
+
+  # get resource by type and owner
+  resources(oid: ID, restype: String): [Resource]
+
+  # get resource types
+  resourceTypes(oid: ID): [Resource]
+  operation(id: ID): Operation
+  operations(sort: String, order: String, limit: Int, filters: [Filter], page: Int, search: String, s: String): [Operation]
+}
+
+interface Resource {
+  owner: String
+  restype: String
+}
+
+type Role {
+  _id: String!
+  name: String
+  description: String
+  permissions: [Permission]
+}
+
+input RoleInput {
+  name: String!
+  description: String
+  permissions: [PermissionInput]
+}
+
+type RoleList {
+  roles: [Role]
+}
+
+type User {
+  _id: String!
+  loginname: String!
+  roles: [Role]
+  useralias: String
+  tel: String
+  date: Float
+  email: String
+  status: Int
+}
+
+input UserInput {
+  loginname: String!
+  useralias: String!
+  password: String
+  email: String!
+  date: String
+}
+
+type UserList {
+  users: [User]
+}

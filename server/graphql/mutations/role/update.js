@@ -4,19 +4,19 @@ import {
   GraphQLString,
   GraphQLList
 } from 'graphql';
-import getProjection from '../../../../helpers/get-projection';
 import roleType from '../../types/role';
 import RoleModel from '../../../models/role';
 import permissionInputType from '../../types/permission-input';
+import keystringUpdateType from '../../types/keystring-update';
+import keypermissionlistUpdateType from '../../types/keypermissionlist-update';
 
-async function updateRole ({roleId, projection, data}) {
+async function updateRole ({roleId, data}) {
   const role = await RoleModel
     .findByIdAndUpdate(
       roleId,
       data,
       {upsert: true, new: true}
-    )
-    .select(projection);
+    ).exec();
 
   if (!role) {
     throw new Error('Error updating role');
@@ -28,24 +28,16 @@ async function updateRole ({roleId, projection, data}) {
 export const updateRoleDescription = {
   type: roleType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLNonNull(GraphQLString)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keystringUpdateType)
     }
   },
-  resolve (root, params, context, info) {
-    // key-value pairs projection
-    const projection = getProjection(info.fieldNodes[0]);
-
+  resolve (root, params) {
     return updateRole({
-      roleId: params.id,
-      projection,
+      roleId: params.input.id,
       data: {
-        description: params.value
+        description: params.input.value
       }
     });
   }
@@ -55,23 +47,16 @@ export const updateRoleDescription = {
 export const updateRolePermissions = {
   type: roleType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLList(permissionInputType)
+    input: {
+      name: 'input',
+      type: new GraphQLList(keypermissionlistUpdateType)
     }
   },
-  async resolve (root, params, context, options) {
-    const projection = getProjection(options.fieldNodes[0]);
-
+  async resolve (root, params) {
     return updateRole({
-      roleId: params.id,
-      projection,
+      roleId: params.input.id,
       data: {
-        permissions: params.value
+        permissions: params.input.value
       }
     });
   }

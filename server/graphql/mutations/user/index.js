@@ -6,7 +6,8 @@ import {
   updateUserPassword,
   updateUserRoles,
   updateUserStatus,
-  updateUserTel
+  updateUserTel,
+  updateUserMultiFields
 } from './update';
 
 export default {
@@ -17,5 +18,6 @@ export default {
   updateUserPassword,
   updateUserRoles,
   updateUserStatus,
-  updateUserTel
+  updateUserTel,
+  updateUserMultiFields
 };

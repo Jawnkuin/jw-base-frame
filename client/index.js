@@ -1,8 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
-import Root from './containers/Root';
+import Root from './root';
+// import './index.less';
 
-const App = () => (
-  <Root />
-);
-render((<App />), document.getElementById('root'));
+
+render((<Root />), document.getElementById('root'));

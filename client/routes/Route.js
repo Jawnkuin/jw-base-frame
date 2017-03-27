@@ -1,17 +1,14 @@
 import React from 'react';
 import {IndexRoute, Route, Redirect} from 'react-router';
-
-import ViewerQuery from './ViewerQuery';
-import AppContainer from '../components/App/AppContainer';
-import FeatureContainer from '../components/Feature/FeatureContainer';
-import SignupComponent from '../components/Signup/SignupComponent';
-import LoginComponent from '../components/Login/LoginComponent';
+import UserRole from '../components/UserRole';
+import UserDetail from '../components/UserDetail';
+import Frame from '../components/Frame';
 
 export default (
-  <Route path='/' component={AppContainer} queries={ViewerQuery}>
-    <IndexRoute component={FeatureContainer} queries={ViewerQuery} />
-    <Route path='/signup' component={SignupComponent} />
-    <Route path='/login' component={LoginComponent} />
+  <Route path='/' component={Frame}>
+    <IndexRoute component={UserRole} />
+    <Route path='users' component={UserRole} />
+    <Route path='user/:id' component={UserDetail} />
     <Redirect from='*' to='/' />
   </Route>
 );

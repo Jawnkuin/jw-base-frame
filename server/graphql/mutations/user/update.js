@@ -1,23 +1,20 @@
 import {
   GraphQLNonNull,
-  GraphQLID,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLInt,
-  GraphQLList
+  GraphQLBoolean
 } from 'graphql';
-import getProjection from '../../../../helpers/get-projection';
 import userType from '../../types/user';
 import UserModel from '../../../models/user';
+import keystringUpdateType from '../../types/keystring-update';
+import keylistUpdateType from '../../types/keylist-update';
+import keyfieldvaluepairsUpdateType from '../../types/keyfieldvaluepairs-update';
 
-async function updateUser ({userId, projection, data}) {
+async function updateUser ({userId, data}) {
   const user = await UserModel
     .findByIdAndUpdate(
       userId,
       data,
       {upsert: true, new: true}
-    )
-    .select(projection);
+    ).exec();
 
   if (!user) {
     throw new Error('Error updating user');
@@ -26,27 +23,58 @@ async function updateUser ({userId, projection, data}) {
   return user;
 }
 
+export const updateUserMultiFields = {
+  type: userType,
+  args: {
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keyfieldvaluepairsUpdateType)
+    }
+  },
+  resolve (root, params) {
+    const fieldValuePairs = {};
+    params.input.fieldvalues.forEach((fv) => {
+      let value;
+      switch (fv.ftype) {
+        case 'Float':
+          value = parseFloat(fv.value) || '';
+          break;
+        case 'Int':
+          value = parseInt(fv.value, 10) || '';
+          break;
+        case 'Boolean':
+          value = !!fv.value;
+          break;
+        default:
+          value = fv.value;
+      }
+      if (!value) {
+        throw new Error(`Error updateUserMultiFields invalid value for field ${fv.field}`);
+      }
+      fieldValuePairs[fv.field] = fv.value;
+    });
+    return updateUser({
+      userId: params.input.id,
+      data: fieldValuePairs
+    });
+  }
+};
+
 export const updateUserAlias = {
   type: userType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLNonNull(GraphQLString)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keystringUpdateType)
     }
   },
-  resolve (root, params, context, info) {
+  resolve (root, params) {
     // key-value pairs projection
-    const projection = getProjection(info.fieldNodes[0]);
 
     return updateUser({
-      userId: params.id,
-      projection,
+      userId: params.input.id,
       data: {
-        useralias: params.value
+        useralias: params.input.value
       }
     });
   }
@@ -55,23 +83,16 @@ export const updateUserAlias = {
 export const updateUserTel = {
   type: userType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLNonNull(GraphQLString)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keystringUpdateType)
     }
   },
-  async resolve (root, params, context, options) {
-    const projection = getProjection(options.fieldNodes[0]);
-
+  async resolve (root, params) {
     return updateUser({
-      userId: params.id,
-      projection,
+      userId: params.input.id,
       data: {
-        tel: params.value
+        tel: params.input.value
       }
     });
   }
@@ -80,23 +101,16 @@ export const updateUserTel = {
 export const updateUserRoles = {
   type: userType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLList(GraphQLID)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keylistUpdateType)
     }
   },
-  async resolve (root, params, context, options) {
-    const projection = getProjection(options.fieldNodes[0]);
-
+  async resolve (root, params) {
     return updateUser({
-      userId: params.id,
-      projection,
+      userId: params.input.id,
       data: {
-        roles: params.value
+        roles: params.input.value
       }
     });
   }
@@ -105,23 +119,16 @@ export const updateUserRoles = {
 export const updateUserEmail = {
   type: userType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLNonNull(GraphQLString)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keystringUpdateType)
     }
   },
-  async resolve (root, params, context, options) {
-    const projection = getProjection(options.fieldNodes[0]);
-
+  async resolve (root, params) {
     return updateUser({
-      userId: params.id,
-      projection,
+      userId: params.input.id,
       data: {
-        email: params.value
+        email: params.input.value
       }
     });
   }
@@ -130,23 +137,17 @@ export const updateUserEmail = {
 export const updateUserStatus = {
   type: userType,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLNonNull(GraphQLInt)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keystringUpdateType)
     }
   },
-  async resolve (root, params, context, options) {
-    const projection = getProjection(options.fieldNodes[0]);
-
+  async resolve (root, params) {
+    const tempValue = parseInt(params.input.value, 10) || 0;
     return updateUser({
-      userId: params.id,
-      projection,
+      userId: params.input.id,
       data: {
-        status: params.value
+        status: tempValue
       }
     });
   }
@@ -166,23 +167,19 @@ async function setPassword (user, password) {
 export const updateUserPassword = {
   type: GraphQLBoolean,
   args: {
-    id: {
-      name: 'id',
-      type: new GraphQLNonNull(GraphQLID)
-    },
-    value: {
-      name: 'value',
-      type: new GraphQLNonNull(GraphQLString)
+    input: {
+      name: 'input',
+      type: new GraphQLNonNull(keystringUpdateType)
     }
   },
   async resolve (root, params) {
-    const user = await UserModel.findById(params.id);
+    const user = await UserModel.findById(params.input.id);
 
     if (!user) {
       throw new Error('User does not exist');
     }
 
-    await setPassword(user, params.value);
+    await setPassword(user, params.input.value);
     await user.save();
 
     return user;

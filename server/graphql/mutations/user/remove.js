@@ -10,8 +10,8 @@ import UserModel from '../../../models/user';
 export default {
   type: userType,
   args: {
-    id: {
-      name: 'id',
+    input: {
+      name: 'input',
       type: new GraphQLNonNull(GraphQLID)
     }
   },

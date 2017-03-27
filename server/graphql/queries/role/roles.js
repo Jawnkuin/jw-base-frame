@@ -1,10 +1,9 @@
-import {GraphQLList} from 'graphql';
-import roleType from '../../types/role';
+import roleListType from '../../types/role-list';
 import RoleModel from '../../../models/role';
 import {paginationQueryArgs, paginateQuery, searchQuery} from '../../query-pagination';
 
 export default {
-  type: new GraphQLList(roleType),
+  type: roleListType,
   args: {
     ...paginationQueryArgs
   },
@@ -14,6 +13,8 @@ export default {
     // parse query pagination args
     paginateQuery(query, params);
 
-    return query.exec();
+    const roles = await query.exec();
+
+    return {roles};
   }
 };

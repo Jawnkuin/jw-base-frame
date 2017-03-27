@@ -27,9 +27,10 @@ app.use('/graphql', graphqlHTTP({
   graphiql: true
 }));
 
+app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
 
 const webpackCompiler = webpack(webpackConfig);
-app.use(webpackDevMiddleware(webpackCompiler, {noInfo: true, publicPath: webpackConfig.output.publicPath}));
+app.use(webpackDevMiddleware(webpackCompiler, {noInfo: false, publicPath: webpackConfig.output.publicPath}));
 app.use(webpackHotMiddleware(webpackCompiler));
 
 
